@@ -4,22 +4,20 @@ import axios from "axios";
 export const RecipesContext = createContext();
 
 const RecipesProvider = (props) => {
-  const [search, setSearch] = useState({ name: "", category: "" });
+  const [search, setSearch] = useState(null);
   const [recipes, setRecipes] = useState([]);
-
-  let { name, category } = search;
-
-  category = category.replace(/ /g, "_");
-  const URL = `https://www.thecocktaildb.com/api/json/v1/1/filter.php?i=${name}&c=${category}`;
+  console.log(search);
+  // category = category.replace(/ /g, "_");
+  const URL = `https://www.thecocktaildb.com/api/json/v1/1/filter.php?${search}`;
 
   useEffect(() => {
-    if (name === "") return;
+    if (search === null) return;
     const dataFromApi = async () => {
       const response = await axios.get(URL);
       setRecipes(response.data.drinks);
     };
     dataFromApi();
-  }, [URL, name]);
+  }, [URL, search]);
 
   return (
     <RecipesContext.Provider value={{ setSearch, recipes }}>

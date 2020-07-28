@@ -4,18 +4,25 @@ export const CategoryContext = createContext();
 
 const CategoryProvider = (props) => {
   const [category, setCategory] = useState([]);
+  const [ingredient, setIngredient] = useState([]);
 
   useEffect(() => {
-    const URL = `https://www.thecocktaildb.com/api/json/v1/1/list.php?c=list`;
+    const URLI = `https://www.thecocktaildb.com/api/json/v1/1/list.php?i=list`;
+    const URLC = `https://www.thecocktaildb.com/api/json/v1/1/list.php?c=list`;
     const dataFromApi = async () => {
-      const response = await axios.get(URL);
-      setCategory(response.data.drinks);
+      const [responseI, responseC] = await Promise.all([
+        axios(URLI),
+        axios(URLC),
+      ]);
+      setIngredient(responseI.data.drinks);
+      setCategory(responseC.data.drinks);
+      // setCategory(response.data.drinks);
     };
     dataFromApi();
   }, []);
 
   return (
-    <CategoryContext.Provider value={{ category }}>
+    <CategoryContext.Provider value={{ ingredient, category }}>
       {props.children}
     </CategoryContext.Provider>
   );
